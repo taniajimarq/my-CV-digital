@@ -1,6 +1,12 @@
-import React from "react";
+import React from 'react';
+import { ProyectForm } from './new/proyect-form';
 
 const PortafolioPage = () => {
-  return <div>Mi portafolio </div>;
+	return (
+		<div>
+			Mi portafolio
+			<ProyectForm />
+		</div>
+	);
 };
 export default PortafolioPage;
