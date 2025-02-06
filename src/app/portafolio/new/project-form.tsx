@@ -1,89 +1,18 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { ProjectPayload } from '@/app/api/projects/route';
-import api from '@/services/api';
-import axios from 'axios';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
 import { Listado } from '../listado';
-import { IoPencil, IoTrashOutline } from 'react-icons/io5';
+import { ListadoTable } from './listado-table';
 
 export const ProjectForm = () => {
-	const { projectsAll } = Listado();
-
-	const [body, setBody] = useState<ProjectPayload>({
-		description: '',
-		image: '',
-		subTitle: '',
-		title: '',
-		url: '',
-	});
-
-	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setBody({ ...body, image: reader.result as string });
-			};
-			reader.readAsDataURL(file);
-		}
-	};
-
-	const handleSubmit = async (body: ProjectPayload) => {
-		try {
-			const { data } = await api.post<ProjectPayload>('/projects', body);
-			console.log(data);
-		} catch (error) {
-			if (axios.isAxiosError(error)) {
-				console.error(
-					'Error en Axios:',
-					error.response?.data || error.message,
-				);
-			} else {
-				console.error('Error desconocido:', error);
-			}
-		}
-	};
+	const { handleSubmit, handleImageUpload, body, setBody } = Listado();
 
 	return (
 		<>
-			<div className='p-10'>
-				<Table>
-					<TableHeader>
-						<TableRow>
-							<TableHead className='w-1/5'>Título</TableHead>
-							<TableHead className='w-1/5'>Sub título</TableHead>
-							<TableHead className='w-2/5'>Descripción</TableHead>
-							<TableHead className='w-1/5'>Acciónes</TableHead>
-						</TableRow>
-					</TableHeader>
-					<TableBody>
-						{projectsAll.map(projectsAll => (
-							<TableRow key={projectsAll.id}>
-								<TableCell>{projectsAll.title}</TableCell>
-								<TableCell>{projectsAll.subTitle}</TableCell>
-								<TableCell>{projectsAll.description}</TableCell>
-								<TableCell className='flex space-x-7'>
-									<IoTrashOutline className='h-6 w-6 text-gray-500 cursor-pointer' />
-									<IoPencil className='h-6 w-6 text-gray-500 cursor-pointer' />
-								</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</div>
-
+<ListadoTable/>
 			{/* Contenido principal formulario para crear proyectos */}
 			<div className='flex flex-col h-screen bg-white overflow-hidden'>
 				<div className='flex flex-col md:flex-row flex-grow sm:justify-center max-[576px]:min-[360px]:justify-center'>
