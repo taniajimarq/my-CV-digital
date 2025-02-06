@@ -67,3 +67,21 @@ export async function PUT(
 		);
 	}
 }
+
+export async function DELETE(
+	request: NextRequest,
+	{ params }: { params: Promise<{ id: string }> }) {
+	
+	try {
+		const {id} = await params;
+		
+	  await prisma.projects.delete({
+		where: { id: Number(id) },
+	  });
+  
+	  return NextResponse.json({ message: "Proyecto eliminado correctamente" });
+	} catch (error) {
+		console.log(error);
+	  return NextResponse.json({ error: "Error al eliminar el proyecto" }, { status: 500 });
+	}
+  }
