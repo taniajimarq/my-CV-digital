@@ -1,10 +1,10 @@
 import React from 'react';
-import { ProjectForm } from './project-form';
+import { ListadoTable } from './listado-table';
 
 const PageProjects = () => {
 	return (
 		<>
-			<ProjectForm />
+			<ListadoTable />
 		</>
 	);
 };
