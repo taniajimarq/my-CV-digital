@@ -5,7 +5,6 @@ import { ProjectPayload } from '@/app/api/projects/route';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { toast } from '@/hooks/use-toast';
 
 export interface ProjectsResponse {
 	id: number;
@@ -20,14 +19,6 @@ export interface ProjectsResponse {
 
 //TODO:Aqui va la logica
 export function Listado() {
-	const [body, setBody] = useState<ProjectPayload>({
-		description: '',
-		image: '',
-		subTitle: '',
-		title: '',
-		url: '',
-	});
-
 	const FormSchema = z.object({
 		description: z.string().min(2, {
 			message: 'Este campo es requerido',
@@ -56,25 +47,120 @@ export function Listado() {
 			url: '',
 		},
 	});
-
+	const [show, setShow] = useState(false);
+	const handleShow = () => {
+		setShow(!show);
+	};
 	async function onSubmit(data: z.infer<typeof FormSchema>) {
-		toast({
-			description: (
-				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-					<code className='text-white'>
-						{JSON.stringify(data, null, 2)}
-					</code>
-				</pre>
-			),
-		});
-
 		await handleSubmit(data);
 	}
-
 	const handleSubmit = async (body: ProjectPayload) => {
 		try {
-			const { data } = await api.post<ProjectPayload>('/projects', body);
-			console.log(data);
+			if (idProject) {
+				// 🔹 Esperar la actualización antes de continuar
+				await projectUpdate(idProject, body);
+			} else {
+				// 🔹 Crear nuevo proyecto
+				await api.put<ProjectPayload>('/projects', body);
+			}
+
+			// 🔹 Cerrar el modal después de la edición o creación
+			setShow(false);
+
+			// 🔹 Resetear el formulario después de completar la acción
+			form.reset({
+				description: '',
+				image: '',
+				subTitle: '',
+				title: '',
+				url: '',
+			});
+
+			// 🔹 Refrescar la lista de proyectos
+			await getAllProject();
+		} catch (error) {
+			if (axios.isAxiosError(error)) {
+				console.error(
+					'Error en Axios:',
+					error.response?.data || error.message,
+				);
+			} else {
+				console.error('Error desconocido:', error);
+			}
+		}
+	};
+	/* 	const handleSubmit = async (body: ProjectPayload) => {
+		const { data } = await api.post<ProjectPayload>('/projects', body);
+		if (idProject) {
+			await projectUpdate(idProject, body);
+		} else {
+			try {
+				setShow(false);
+				console.log(data);
+				//ver manera de resetear los campos
+				form.reset({
+					description: '',
+					image: '',
+					subTitle: '',
+					title: '',
+					url: '',
+				});
+				await getAllProject();
+			} catch (error) {
+				if (axios.isAxiosError(error)) {
+					console.error(
+						'Error en Axios:',
+						error.response?.data || error.message,
+					);
+				} else {
+					console.error('Error desconocido:', error);
+				}
+			}
+		}
+	}; */
+
+	const [idProject, setIdProject] = useState(0);
+
+	const consultarUno = async (id: number) => {
+		console.log('Consulta');
+		try {
+			const { data } = await api.get<ProjectsResponse>(`/projects/${id}`);
+			setIdProject(data.id);
+			form.setValue('description', data.description);
+			form.setValue('subTitle', data.subTitle);
+			form.setValue('title', data.title);
+			form.setValue('url', data.url);
+		} catch (error) {
+			console.log('Error', error);
+		}
+	};
+
+	const projectUpdate = async (id: number, body: ProjectPayload) => {
+		try {
+			const { data } = await api.put<ProjectsResponse>(
+				`/projects/${id}`,
+				body,
+			);
+			return data;
+		} catch (error) {
+			console.log('Error', error);
+		}
+	};
+
+	const handleRemoveProject = async (id: number) => {
+		try {
+			await api.delete(`/projects/${id}`);
+			// router.refresh();
+			await getAllProject();
+		} catch (error) {
+			console.error('Error al eliminar el proyecto:', error);
+		}
+	};
+
+	const getAllProject = async () => {
+		try {
+			const { data } = await api.get<ProjectsResponse[]>('/projects');
+			setProjectsAll(data);
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				console.error(
@@ -87,46 +173,22 @@ export function Listado() {
 		}
 	};
 
-	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setBody({ ...body, image: reader.result as string });
-			};
-			reader.readAsDataURL(file);
-		}
-	};
-
 	const [projectsAll, setProjectsAll] = useState<ProjectsResponse[]>([]);
 
 	useEffect(() => {
-		const getAllProject = async () => {
-			try {
-				const { data } = await api.get<ProjectsResponse[]>('/projects');
-				setProjectsAll(data);
-			} catch (error) {
-				if (axios.isAxiosError(error)) {
-					console.error(
-						'Error en Axios:',
-						error.response?.data || error.message,
-					);
-				} else {
-					console.error('Error desconocido:', error);
-				}
-			}
-		};
-
 		getAllProject();
 	}, []);
 
 	return {
-		projectsAll,
-		handleSubmit,
-		handleImageUpload,
-		body,
-		setBody,
 		form,
+		handleSubmit,
 		onSubmit,
+		projectsAll,
+		show,
+		setShow,
+		handleShow,
+		handleRemoveProject,
+		consultarUno,
+		idProject,
 	};
 }
