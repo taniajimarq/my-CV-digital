@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import api from '@/services/api';
 import axios from 'axios';
 import { ProjectPayload } from '@/app/api/projects/route';
-
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { toast } from '@/hooks/use-toast';
 
 export interface ProjectsResponse {
 	id: number;
@@ -15,6 +18,7 @@ export interface ProjectsResponse {
 	updatedAt: string;
 }
 
+//TODO:Aqui va la logica
 export function Listado() {
 	const [body, setBody] = useState<ProjectPayload>({
 		description: '',
@@ -23,6 +27,49 @@ export function Listado() {
 		title: '',
 		url: '',
 	});
+
+	const FormSchema = z.object({
+		description: z.string().min(2, {
+			message: 'Este campo es requerido',
+		}),
+		image: z.string().min(2, {
+			message: 'Este campo es requerido',
+		}),
+		subTitle: z.string().min(2, {
+			message: 'Este campo es requerido',
+		}),
+		title: z.string().min(2, {
+			message: 'Este campo es requerido',
+		}),
+		url: z.string().min(2, {
+			message: 'Este campo es requerido',
+		}),
+	});
+
+	const form = useForm<z.infer<typeof FormSchema>>({
+		resolver: zodResolver(FormSchema),
+		defaultValues: {
+			description: '',
+			image: '',
+			subTitle: '',
+			title: '',
+			url: '',
+		},
+	});
+
+	async function onSubmit(data: z.infer<typeof FormSchema>) {
+		toast({
+			description: (
+				<pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+					<code className='text-white'>
+						{JSON.stringify(data, null, 2)}
+					</code>
+				</pre>
+			),
+		});
+
+		await handleSubmit(data);
+	}
 
 	const handleSubmit = async (body: ProjectPayload) => {
 		try {
@@ -51,7 +98,6 @@ export function Listado() {
 		}
 	};
 
-
 	const [projectsAll, setProjectsAll] = useState<ProjectsResponse[]>([]);
 
 	useEffect(() => {
@@ -79,7 +125,8 @@ export function Listado() {
 		handleSubmit,
 		handleImageUpload,
 		body,
-		setBody
-
+		setBody,
+		form,
+		onSubmit,
 	};
 }

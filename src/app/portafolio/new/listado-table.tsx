@@ -55,10 +55,11 @@ export const ListadoTable = () => {
 			<Table>
 				<TableHeader>
 					<TableRow className='text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
-						<TableHead className='w-1/5'>Título</TableHead>
-						<TableHead className='w-1/5'>Sub título</TableHead>
-						<TableHead className='w-2/5'>Descripción</TableHead>
-						<TableHead className='w-1/5'>Acciónes</TableHead>
+						<TableHead className='w-1/6'>Título</TableHead>
+						<TableHead className='w-1/6'>Imagen</TableHead>
+						<TableHead className='w-1/6'>Sub título</TableHead>
+						<TableHead className='w-2/6'>Descripción</TableHead>
+						<TableHead className='w-1/6'>Acciónes</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
