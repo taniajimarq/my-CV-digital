@@ -14,6 +14,7 @@ import {
 	AlertDialog,
 	AlertDialogCancel,
 	AlertDialogContent,
+	AlertDialogDescription,
 	AlertDialogHeader,
 	AlertDialogTitle,
 	AlertDialogTrigger,
@@ -23,21 +24,46 @@ import { ProjectForm } from './project-form';
 import Image from 'next/image';
 
 export const ListadoTable = () => {
-	const { projectsAll } = Listado();
+	const {
+		projectsAll,
+		show,
+		setShow,
+		handleShow,
+		form,
+		onSubmit,
+		handleRemoveProject,
+		consultarUno,
+		idProject,
+		data,
+		signOut,
+	} = Listado();
 
 	return (
 		<>
 			<div className='p-10'>
-				<AlertDialog>
+				<AlertDialog open={show} onOpenChange={handleShow}>
 					<AlertDialogTrigger asChild>
-						<div className='flex sm:flex-row sm:justify-between justify-start flex-col'>
-							<span className='text-indigo-900 text-lg text-center mb-5 sm:text-2xl font-bold'>
-								Listado de proyectos
-							</span>
-							<Button>Agregar nuevo</Button>
+						<div>
+							<div className='flex sm:flex-row sm:justify-between justify-start flex-col'>
+								<span className='text-indigo-900 text-lg text-center mb-5 sm:text-2xl font-bold'>
+									Listado de proyectos
+								</span>
+								<h1 className='mb-20'>{data?.user?.name}</h1>
+								<Button onClick={() => setShow(true)}>
+									Agregar nuevo
+								</Button>
+							</div>
+							<Button
+								onClick={() =>
+									signOut({ callbackUrl: '/login' })
+								}
+							>
+								cerrar sesión
+							</Button>
 						</div>
 					</AlertDialogTrigger>
 					<AlertDialogContent>
+						<AlertDialogDescription className='hidden' />
 						<div>
 							<AlertDialogHeader>
 								<AlertDialogTitle className='flex justify-end'>
@@ -45,50 +71,68 @@ export const ListadoTable = () => {
 										<IoClose />
 									</AlertDialogCancel>
 								</AlertDialogTitle>
-								<ProjectForm />
+								<ProjectForm
+									form={form}
+									onSubmit={onSubmit}
+									idProject={idProject}
+								/>
 							</AlertDialogHeader>
 						</div>
 					</AlertDialogContent>
 				</AlertDialog>
 			</div>
 
-			<Table>
+			<Table className=''>
 				<TableHeader>
 					<TableRow className='text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
-						<TableHead className='w-1/5'>Título</TableHead>
-						<TableHead className='w-1/5'>Sub título</TableHead>
-						<TableHead className='w-2/5'>Descripción</TableHead>
-						<TableHead className='w-1/5'>Acciónes</TableHead>
+						<TableHead className='w-1/6'>Título</TableHead>
+						<TableHead className='w-1/6'>Imagen</TableHead>
+						<TableHead className='w-1/6'>Sub título</TableHead>
+						<TableHead className='w-2/6'>Descripción</TableHead>
+						<TableHead className='w-1/12'>Acciones</TableHead>
 					</TableRow>
 				</TableHeader>
 				<TableBody>
-					{projectsAll.map(projectsAll => (
-						<TableRow key={projectsAll.id}>
-							<TableCell>{projectsAll.title}</TableCell>
+					{projectsAll.map(projectAll => (
+						<TableRow key={projectAll.id}>
+							<TableCell>{projectAll.title}</TableCell>
 							<TableCell>
 								<Image
 									src={
-										projectsAll.image &&
-										projectsAll.image.trim() !== ''
-											? projectsAll.image
+										projectAll.image &&
+										projectAll.image.trim() !== ''
+											? projectAll.image
 											: '/assets/sin_imagen.png'
 									}
 									alt={
-										projectsAll.title ||
+										projectAll.title ||
 										'Imagen no disponible'
 									}
-									// src={'/assets/naturityClean.png'}
 									width={200}
 									height={200}
-									// alt={''}
 									className='w-24 h-24'
 								/>
 							</TableCell>
-							<TableCell>{projectsAll.subTitle}</TableCell>
-							<TableCell>{projectsAll.description}</TableCell>
-							<TableCell className='flex space-x-7'>
-								<IoTrashOutline className='h-6 w-6 text-gray-500 cursor-pointer' />
-								<IoPencil className='h-6 w-6 text-gray-500 cursor-pointer' />
+							<TableCell>{projectAll.subTitle}</TableCell>
+							<TableCell>{projectAll.description}</TableCell>
+							<TableCell className='flex  space-x-7 items-center mt-5'>
+								<IoTrashOutline
+									type='button'
+									onClick={e => {
+										e.stopPropagation();
+										handleRemoveProject(projectAll.id);
+									}}
+									className='h-6 w-6 text-gray-500 cursor-pointer'
+								/>
+								<IoPencil
+									type='button'
+									onClick={e => {
+										e.stopPropagation();
+										setShow(true);
+										consultarUno(projectAll.id);
+									}}
+									className='h-6 w-6 text-gray-500 cursor-pointer'
+								/>
 							</TableCell>
 						</TableRow>
 					))}

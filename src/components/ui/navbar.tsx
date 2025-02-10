@@ -77,7 +77,6 @@ export const Navbar = () => {
 							</button>
 						</div>
 						{/* Content menu  */}
-
 						<div className='flex flex-1 items-center justify-center sm:items-center sm:justify-start '>
 							<div className='flex shrink-0 items-center'>
 								<Image
@@ -99,6 +98,7 @@ export const Navbar = () => {
 								</div>
 							</div>
 						</div>
+
 						<div className='absolute space-x-1 sm:space-x-6 inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
 							<IoLogoInstagram
 								color='gray'
@@ -113,6 +113,7 @@ export const Navbar = () => {
 								className='w-5 h-5 sm:w-7 sm:h-7'
 							/>
 						</div>
+
 						{/* Finish content menu */}
 					</div>
 				</div>
