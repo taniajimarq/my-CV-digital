@@ -5,7 +5,8 @@ import { ProjectPayload } from '@/app/api/projects/route';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-
+import { useSession, signOut, signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 export interface ProjectsResponse {
 	id: number;
 	title: string;
@@ -17,15 +18,12 @@ export interface ProjectsResponse {
 	updatedAt: string;
 }
 
-//TODO:Aqui va la logica
-export function Listado() {
-	const FormSchema = z.object({
+const getFormSchema = () =>
+	z.object({
 		description: z.string().min(2, {
 			message: 'Este campo es requerido',
 		}),
-		image: z.string().min(2, {
-			message: 'Este campo es requerido',
-		}),
+		image: z.string().optional(),
 		subTitle: z.string().min(2, {
 			message: 'Este campo es requerido',
 		}),
@@ -37,11 +35,17 @@ export function Listado() {
 		}),
 	});
 
+//TODO:Aqui va la logica
+export function Listado() {
+	const [idProject, setIdProject] = useState(0);
+	const FormSchema = getFormSchema();
+	const router = useRouter();
+
 	const form = useForm<z.infer<typeof FormSchema>>({
 		resolver: zodResolver(FormSchema),
 		defaultValues: {
 			description: '',
-			image: '',
+			image: undefined,
 			subTitle: '',
 			title: '',
 			url: '',
@@ -50,38 +54,42 @@ export function Listado() {
 	const [show, setShow] = useState(false);
 	const handleShow = () => {
 		setShow(!show);
+		resetForm();
 	};
+
+	const resetForm = () => {
+		setIdProject(0);
+		form.reset({
+			description: '',
+			image: undefined,
+			subTitle: '',
+			title: '',
+			url: '',
+		});
+	};
+
 	async function onSubmit(data: z.infer<typeof FormSchema>) {
 		await handleSubmit(data);
 	}
-	const handleSubmit = async (body: ProjectPayload) => {
+	const handleSubmit = async (body: Partial<ProjectPayload>) => {
+		console.log(body);
 		try {
 			if (idProject) {
-				// 🔹 Esperar la actualización antes de continuar
-				await projectUpdate(idProject, body);
+				// Editar proyecto
+				await api.put<ProjectPayload>(`/projects/${idProject}`, body);
 			} else {
-				// 🔹 Crear nuevo proyecto
-				await api.put<ProjectPayload>('/projects', body);
+				// Crear proyecto
+				await api.post<ProjectPayload>('/projects', body);
 			}
 
-			// 🔹 Cerrar el modal después de la edición o creación
 			setShow(false);
-
-			// 🔹 Resetear el formulario después de completar la acción
-			form.reset({
-				description: '',
-				image: '',
-				subTitle: '',
-				title: '',
-				url: '',
-			});
-
-			// 🔹 Refrescar la lista de proyectos
+			resetForm();
 			await getAllProject();
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
 				console.error(
 					'Error en Axios:',
+					error.response?.status,
 					error.response?.data || error.message,
 				);
 			} else {
@@ -89,40 +97,8 @@ export function Listado() {
 			}
 		}
 	};
-	/* 	const handleSubmit = async (body: ProjectPayload) => {
-		const { data } = await api.post<ProjectPayload>('/projects', body);
-		if (idProject) {
-			await projectUpdate(idProject, body);
-		} else {
-			try {
-				setShow(false);
-				console.log(data);
-				//ver manera de resetear los campos
-				form.reset({
-					description: '',
-					image: '',
-					subTitle: '',
-					title: '',
-					url: '',
-				});
-				await getAllProject();
-			} catch (error) {
-				if (axios.isAxiosError(error)) {
-					console.error(
-						'Error en Axios:',
-						error.response?.data || error.message,
-					);
-				} else {
-					console.error('Error desconocido:', error);
-				}
-			}
-		}
-	}; */
-
-	const [idProject, setIdProject] = useState(0);
 
 	const consultarUno = async (id: number) => {
-		console.log('Consulta');
 		try {
 			const { data } = await api.get<ProjectsResponse>(`/projects/${id}`);
 			setIdProject(data.id);
@@ -130,18 +106,6 @@ export function Listado() {
 			form.setValue('subTitle', data.subTitle);
 			form.setValue('title', data.title);
 			form.setValue('url', data.url);
-		} catch (error) {
-			console.log('Error', error);
-		}
-	};
-
-	const projectUpdate = async (id: number, body: ProjectPayload) => {
-		try {
-			const { data } = await api.put<ProjectsResponse>(
-				`/projects/${id}`,
-				body,
-			);
-			return data;
 		} catch (error) {
 			console.log('Error', error);
 		}
@@ -172,12 +136,15 @@ export function Listado() {
 			}
 		}
 	};
+	const { data, status } = useSession();
 
 	const [projectsAll, setProjectsAll] = useState<ProjectsResponse[]>([]);
 
 	useEffect(() => {
-		getAllProject();
-	}, []);
+		if (status === 'authenticated') {
+			getAllProject();
+		}
+	}, [status]);
 
 	return {
 		form,
@@ -190,5 +157,10 @@ export function Listado() {
 		handleRemoveProject,
 		consultarUno,
 		idProject,
+		data,
+		signOut,
+		signIn,
+		router,
+		status,
 	};
 }

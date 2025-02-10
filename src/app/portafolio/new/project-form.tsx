@@ -11,11 +11,22 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { UseFormReturn } from 'react-hook-form';
-import { ProjectPayload } from '@/app/api/projects/route';
 
 interface Props {
-	form: UseFormReturn<ProjectPayload>;
-	onSubmit: (data: ProjectPayload) => Promise<void>;
+	form: UseFormReturn<{
+		title: string;
+		subTitle: string;
+		description: string;
+		url: string;
+		image?: string | undefined;
+	}>;
+	onSubmit: (data: {
+		title: string;
+		subTitle: string;
+		description: string;
+		url: string;
+		image?: string | undefined;
+	}) => Promise<void>;
 	idProject: number;
 }
 
