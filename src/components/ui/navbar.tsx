@@ -7,24 +7,34 @@ import {
 	IoLogoInstagram,
 	IoLogoLinkedin,
 } from 'react-icons/io5';
-
-const menuItems = [
-	{
-		path: '/acercademi',
-		title: 'Acrca de mi',
-	},
-	{
-		path: '/trayectoria',
-		title: 'Trayectoria',
-	},
-	{
-		path: '/portafolio',
-		title: 'Portafolio',
-	},
-];
+import { useSession, signOut } from 'next-auth/react';
+import { IoPower } from 'react-icons/io5';
 
 export const Navbar = () => {
+	const { data: session } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
+	const menuItems = [
+		{
+			path: '/acercademi',
+			title: 'Acrca de mi',
+		},
+		{
+			path: '/trayectoria',
+			title: 'Trayectoria',
+		},
+		{
+			path: '/portafolio',
+			title: 'Portafolio',
+		},
+		...(session?.user
+			? [
+					{
+						path: '/portafolio/new',
+						title: 'Proyectos',
+					},
+				]
+			: []),
+	];
 	return (
 		<>
 			<nav className='bg-white drop-shadow-lg'>
@@ -98,23 +108,40 @@ export const Navbar = () => {
 								</div>
 							</div>
 						</div>
-
-						<div className='absolute space-x-1 sm:space-x-6 inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
-							<IoLogoInstagram
-								color='gray'
-								className='w-5 h-5 sm:w-7 sm:h-7'
-							/>
-							<IoLogoLinkedin
-								color='gray'
-								className='w-5 h-5 sm:w-7 sm:h-7'
-							/>
-							<IoLogoBehance
-								color='gray'
-								className='w-5 h-5 sm:w-7 sm:h-7'
-							/>
-						</div>
-
-						{/* Finish content menu */}
+						{!session ? (
+							<div className='absolute space-x-1 sm:space-x-6 inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
+								<IoLogoInstagram
+									color='gray'
+									className='w-5 h-5 sm:w-7 sm:h-7'
+								/>
+								<IoLogoLinkedin
+									color='gray'
+									className='w-5 h-5 sm:w-7 sm:h-7'
+								/>
+								<IoLogoBehance
+									color='gray'
+									className='w-5 h-5 sm:w-7 sm:h-7'
+								/>
+							</div>
+						) : (
+							<div className=' flex flex-row justify-center  space-x-5'>
+								<h1 className='text-xl font-semibold'>
+									{session.user?.name}
+								</h1>
+								<button
+									type='button'
+									className='text-white align-text-bottom bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 rounded-lg text-sm px-5 py-2 text-center me-2 mb-2'
+								>
+									<IoPower
+										onClick={() =>
+											signOut({
+												callbackUrl: '/login',
+											})
+										}
+									/>
+								</button>
+							</div>
+						)}
 					</div>
 				</div>
 
