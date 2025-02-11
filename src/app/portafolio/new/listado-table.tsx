@@ -34,32 +34,22 @@ export const ListadoTable = () => {
 		handleRemoveProject,
 		consultarUno,
 		idProject,
-		data,
-		signOut,
 	} = Listado();
 
 	return (
 		<>
-			<div className='p-10'>
+			<div className='flex flex-row justify-between pb-10'>
+				<span className='text-indigo-900 text-lg text-center mb-5 sm:text-2xl font-bold'>
+					Listado de proyectos
+				</span>
 				<AlertDialog open={show} onOpenChange={handleShow}>
 					<AlertDialogTrigger asChild>
 						<div>
 							<div className='flex sm:flex-row sm:justify-between justify-start flex-col'>
-								<span className='text-indigo-900 text-lg text-center mb-5 sm:text-2xl font-bold'>
-									Listado de proyectos
-								</span>
-								<h1 className='mb-20'>{data?.user?.name}</h1>
 								<Button onClick={() => setShow(true)}>
 									Agregar nuevo
 								</Button>
 							</div>
-							<Button
-								onClick={() =>
-									signOut({ callbackUrl: '/login' })
-								}
-							>
-								cerrar sesión
-							</Button>
 						</div>
 					</AlertDialogTrigger>
 					<AlertDialogContent>
