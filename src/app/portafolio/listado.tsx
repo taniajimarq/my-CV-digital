@@ -141,10 +141,8 @@ export function Listado() {
 	const [projectsAll, setProjectsAll] = useState<ProjectsResponse[]>([]);
 
 	useEffect(() => {
-		if (status === 'authenticated') {
-			getAllProject();
-		}
-	}, [status]);
+		getAllProject();
+	}, []);
 
 	return {
 		form,
@@ -162,5 +160,6 @@ export function Listado() {
 		signIn,
 		router,
 		status,
+		getAllProject,
 	};
 }
