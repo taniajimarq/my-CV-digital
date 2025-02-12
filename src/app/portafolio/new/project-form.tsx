@@ -10,27 +10,9 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
-import { UseFormReturn } from 'react-hook-form';
+import { PropsForm } from '@/interfaces';
 
-interface Props {
-	form: UseFormReturn<{
-		title: string;
-		subTitle: string;
-		description: string;
-		url: string;
-		image?: string | undefined;
-	}>;
-	onSubmit: (data: {
-		title: string;
-		subTitle: string;
-		description: string;
-		url: string;
-		image?: string | undefined;
-	}) => Promise<void>;
-	idProject: number;
-}
-
-export const ProjectForm = ({ form, onSubmit, idProject }: Props) => {
+export const ProjectForm = ({ form, onSubmit, idProject }: PropsForm) => {
 	return (
 		<>
 			<Form {...form}>

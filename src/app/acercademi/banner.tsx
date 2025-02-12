@@ -20,11 +20,11 @@ const Banner = () => {
 				/>
 
 				<div className='flex flex-col text-white font-medium text-2xl md:text-4xl text-center md:text-right justify-center pr-6 md:pr-40'>
-					<span>¡Hola! Mi nombre es Tania y soy diseñadora UX</span>
-					<span className='text-sm mt-2'>
+					<h1>¡Hola! Mi nombre es Tania y soy diseñadora UX</h1>
+					<p className='text-base mt-2'>
 						Me especializo en crear experiencias de usuario tanto en
 						desarrollo como en la gestión de proyectos de software
-					</span>
+					</p>
 				</div>
 
 				{/* Línea inferior de todo el ancho (Oculta en móviles) */}

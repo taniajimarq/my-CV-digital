@@ -33,7 +33,9 @@ export async function POST(request: NextRequest) {
 /* Consultar */
 export async function GET() {
 	try {
-		const projects = await prisma.projects.findMany();
+		const projects = await prisma.projects.findMany({
+			orderBy: { id: 'desc' },
+		});
 
 		if (!projects) {
 			return NextResponse.json(
