@@ -8,71 +8,36 @@ import {
 	TableHeader,
 	TableRow,
 } from '@/components/ui/table';
-import { Listado } from '../listado';
-import { IoClose, IoPencil, IoTrashOutline } from 'react-icons/io5';
-import {
-	AlertDialog,
-	AlertDialogCancel,
-	AlertDialogContent,
-	AlertDialogDescription,
-	AlertDialogHeader,
-	AlertDialogTitle,
-	AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { ProjectForm } from './project-form';
+import { useCustomListado } from '../useCustomListado';
+import { IoPencil, IoTrashOutline } from 'react-icons/io5';
 import Image from 'next/image';
+import { ButtonNuevo } from './btn-nuevo';
 
 export const ListadoTable = () => {
 	const {
 		projectsAll,
-		show,
 		setShow,
+		handleRemoveProject,
+		consultarUno,
+		show,
 		handleShow,
 		form,
 		onSubmit,
-		handleRemoveProject,
-		consultarUno,
 		idProject,
-	} = Listado();
+	} = useCustomListado();
 
 	return (
 		<>
-			<div className='flex flex-row justify-between pb-10'>
-				<span className='text-indigo-900 text-lg text-center mb-5 sm:text-2xl font-bold'>
-					Listado de proyectos
-				</span>
-				<AlertDialog open={show} onOpenChange={handleShow}>
-					<AlertDialogTrigger asChild>
-						<div>
-							<div className='flex sm:flex-row sm:justify-between justify-start flex-col'>
-								<Button onClick={() => setShow(true)}>
-									Agregar nuevo
-								</Button>
-							</div>
-						</div>
-					</AlertDialogTrigger>
-					<AlertDialogContent>
-						<AlertDialogDescription className='hidden' />
-						<div>
-							<AlertDialogHeader>
-								<AlertDialogTitle className='flex justify-end'>
-									<AlertDialogCancel>
-										<IoClose />
-									</AlertDialogCancel>
-								</AlertDialogTitle>
-								<ProjectForm
-									form={form}
-									onSubmit={onSubmit}
-									idProject={idProject}
-								/>
-							</AlertDialogHeader>
-						</div>
-					</AlertDialogContent>
-				</AlertDialog>
-			</div>
+			<ButtonNuevo
+				form={form}
+				handleShow={handleShow}
+				show={show}
+				onSubmit={onSubmit}
+				idProject={idProject}
+				setShow={setShow}
+			/>
 
-			<Table className=''>
+			<Table>
 				<TableHeader>
 					<TableRow className='text-base text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
 						<TableHead className='w-1/6'>Título</TableHead>

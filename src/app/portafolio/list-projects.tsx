@@ -8,13 +8,24 @@ import {
 
 /* import { Trash2, Settings  } from 'lucide-react'; */
 import Image from 'next/image';
-import { Listado } from './listado';
+import { useCustomListado } from './useCustomListado';
 
 export function ListProjects() {
-	const { projectsAll } = Listado();
+	const { projectsAll } = useCustomListado();
 
 	return (
 		<>
+			<div className='w-full h-auto bg-gradient-to-r from-[#5F39BA] via-[#5F39BA] to-[#ffffff] p-6 md:pl-24 relative mb-5'>
+				<span className='text-white font-semibold text-xl'>
+					Mi experiencia es laboral y académica, dale un vistazo a mis
+					proyectos!
+				</span>
+				<p className='mb-4 text-base font-normal text-white'>
+					Al trabajar para una empresa dedicada a la creación de
+					soluciónes digitales pude obtener mi pasión por el deseño UX
+					/ UI
+				</p>
+			</div>
 			<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-7'>
 				{projectsAll ? (
 					projectsAll.map(e => (

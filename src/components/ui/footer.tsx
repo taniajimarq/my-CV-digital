@@ -17,8 +17,16 @@ const Footer = () => {
 								derechos.
 							</span>
 							<span className='flex justify-center sm:justify-start text-sm text-gray-500 dark:text-gray-400 mt-2 sm:mt-0'>
-								<IoCallOutline className='mr-5' />
-								33 11 38 77 89
+								<Link
+									className='flex flex-row items-center gap-x-2' // Agrega espacio entre icono y número
+									href='https://wa.me/3311387789'
+									target='_blank'
+									rel='noopener noreferrer'
+								>
+									<IoCallOutline className='w-5 h-5' />{' '}
+									{/* Ajusta tamaño si es necesario */}
+									<span>33 11 38 77 89</span>
+								</Link>
 							</span>
 							<ul className='flex justify-center sm:justify-end flex-wrap items-center text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400 mt-2 sm:mt-0'>
 								<Link
