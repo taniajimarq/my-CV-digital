@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { useSession, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { ProjectsResponse } from '@/interfaces';
+import { useSwalAlert } from './useSwalAlert';
 
 //TODO:Aqui va la logica
 export function useCustomListado() {
@@ -17,6 +18,7 @@ export function useCustomListado() {
 	const [projectsAll, setProjectsAll] = useState<ProjectsResponse[]>([]);
 
 	const router = useRouter();
+	const { display_alert } = useSwalAlert();
 
 	const FormSchema = z.object({
 		description: z.string().min(2, {
@@ -71,9 +73,17 @@ export function useCustomListado() {
 			if (idProject) {
 				// Editar proyecto
 				await api.put<ProjectPayload>(`/projects/${idProject}`, body);
+				display_alert({
+					success: true,
+					msg: 'Proyecto actualizado correctamente',
+				});
 			} else {
 				// Crear proyecto
 				await api.post<ProjectPayload>('/projects', body);
+				display_alert({
+					success: true,
+					msg: 'Proyecto creado correctamente',
+				});
 			}
 
 			setShow(false);
@@ -87,7 +97,14 @@ export function useCustomListado() {
 					error.response?.data || error.message,
 				);
 			} else {
-				console.error('Error desconocido:', error);
+				display_alert({
+					success: false,
+					msg: 'Error al guardar el proyecto',
+					errors: axios.isAxiosError(error)
+						? [error.response?.data || error.message]
+						: ['Error desconocido'],
+				});
+				console.error('Error en la solicitud:', error);
 			}
 		}
 	};
@@ -108,9 +125,20 @@ export function useCustomListado() {
 	const handleRemoveProject = async (id: number) => {
 		try {
 			await api.delete(`/projects/${id}`);
+			display_alert({
+				success: true,
+				msg: 'Proyecto eliminado correctamente',
+			});
 			// router.refresh();
 			await getAllProject();
 		} catch (error) {
+			display_alert({
+				success: false,
+				msg: 'Error al eliminar el proyecto',
+				errors: axios.isAxiosError(error)
+					? [error.response?.data || error.message]
+					: ['Error desconocido'],
+			});
 			console.error('Error al eliminar el proyecto:', error);
 		}
 	};
