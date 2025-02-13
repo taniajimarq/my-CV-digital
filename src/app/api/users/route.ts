@@ -10,6 +10,7 @@ export interface UserPayload {
 	email: string;
 	username: string;
 	password: string;
+	code: string;
 }
 
 /* Crear */
@@ -43,6 +44,7 @@ export async function POST(request: NextRequest) {
 				email: body.email,
 				username: body.username,
 				password: hashedPassword,
+				verificationCode: body.code || '',
 			},
 		});
 

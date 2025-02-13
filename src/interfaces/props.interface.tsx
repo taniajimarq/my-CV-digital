@@ -1,4 +1,5 @@
 import { UseFormReturn } from 'react-hook-form';
+import { SweetAlertIcon } from 'sweetalert2';
 
 export interface PropsProyects {
 	show: boolean;
@@ -46,4 +47,12 @@ export interface ProjectsResponse {
 	url: string;
 	createdAt: string;
 	updatedAt: string;
+}
+
+export interface Display_Alert_Interface {
+	success?: boolean;
+	msg?: string;
+	errors?: string[];
+	props_alert?: object;
+	icon?: SweetAlertIcon | undefined;
 }

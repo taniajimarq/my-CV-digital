@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-
 import React, { useState } from 'react';
 import { SidebarMenuItems } from './SidebarMenuItems';
 import {
@@ -11,10 +10,13 @@ import {
 import { useSession, signOut } from 'next-auth/react';
 import { IoPower } from 'react-icons/io5';
 import Link from 'next/link';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 export const Navbar = () => {
 	const { data: session } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
+	const [loadingBtn, setLoadingBtn] = useState(false);
+
 	const menuItems = [
 		{
 			path: '/acercademi',
@@ -50,7 +52,7 @@ export const Navbar = () => {
 								className='relative inline-flex items-center justify-center rounded-md p-2 text-gray-900 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset'
 								aria-controls='mobile-menu'
 								aria-expanded='false'
-								onClick={() => setIsOpen(!isOpen)}
+								onClick={() => setLoadingBtn(!isOpen)}
 							>
 								<span className='absolute -inset-0.5'></span>
 								<span className='sr-only'>Open main menu</span>
@@ -150,16 +152,25 @@ export const Navbar = () => {
 									{session.user?.name}
 								</span>
 								<button
+									onClick={() => {
+										setLoadingBtn(true);
+										setIsOpen(!isOpen);
+										signOut({
+											callbackUrl: '/login',
+										});
+									}}
 									type='button'
 									className='text-white align-text-bottom bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80 rounded-lg text-sm px-5 py-2 text-center me-2 mb-2'
 								>
-									<IoPower
-										onClick={() =>
-											signOut({
-												callbackUrl: '/login',
-											})
-										}
-									/>
+									{!loadingBtn ? (
+										<IoPower />
+									) : (
+										<ClipLoader
+											size={10}
+											color='#fffff'
+											loading={loadingBtn}
+										/>
+									)}
 								</button>
 							</div>
 						)}
