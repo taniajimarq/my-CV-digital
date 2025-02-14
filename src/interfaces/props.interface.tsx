@@ -1,6 +1,8 @@
 import { UseFormReturn } from 'react-hook-form';
 import { SweetAlertIcon } from 'sweetalert2';
-
+{
+	/**Interfaz de proyectos */
+}
 export interface PropsProyects {
 	show: boolean;
 	setShow: (value: boolean) => void;
@@ -20,6 +22,9 @@ export interface PropsProyects {
 		image?: string | undefined;
 	}) => Promise<void>;
 	idProject: number;
+}
+{
+	/**Interfaz de formulario proyectos */
 }
 export interface PropsForm {
 	form: UseFormReturn<{
@@ -47,6 +52,9 @@ export interface ProjectsResponse {
 	url: string;
 	createdAt: string;
 	updatedAt: string;
+}
+{
+	/**Interfaz de Alertas SweetAlert2 */
 }
 
 export interface Display_Alert_Interface {

@@ -4,6 +4,7 @@ import { ProjectPayload } from '../route';
 
 const prisma = new PrismaClient();
 
+//Método para buscar productos a partir del ID único
 export async function GET(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
@@ -14,17 +15,17 @@ export async function GET(
 		if (!id)
 			return NextResponse.json(
 				{ error: 'El id es necesario' },
-				{ status: 400 },
+				{ status: 400 }, // Si no se proporciona un id
 			);
 
 		const projects = await prisma.projects.findUnique({
-			where: { id: +id },
+			where: { id: +id }, //Retorna el objeto del proyecto si se encuentra
 		});
 
 		if (!projects) {
 			return NextResponse.json(
 				{ error: 'Proyecto no encontrado' },
-				{ status: 404 },
+				{ status: 404 }, //Si no existe un proyecto con el id proporcionado
 			);
 		}
 
@@ -33,11 +34,11 @@ export async function GET(
 		console.log(error);
 		return NextResponse.json(
 			{ error: 'Error al obtener el proyecto' },
-			{ status: 500 },
+			{ status: 500 }, //Si ocurre un error inesperado en el servidor
 		);
 	}
 }
-
+//Edición de proyectos existentes
 export async function PUT(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
@@ -67,7 +68,7 @@ export async function PUT(
 		);
 	}
 }
-
+//Eliminar proyectos existentes
 export async function DELETE(
 	request: NextRequest,
 	{ params }: { params: Promise<{ id: string }> },
@@ -86,11 +87,11 @@ export async function DELETE(
 		if (!project) {
 			return NextResponse.json(
 				{ error: 'Proyecto no encontrado' },
-				{ status: 404 },
+				{ status: 404 }, //No encuentra el proyecto
 			);
 		}
 
-		// Eliminar el proyecto
+		// Eliminar el proyecto con respecto al ID
 		await prisma.projects.delete({
 			where: { id: +id },
 		});

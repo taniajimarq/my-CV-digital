@@ -49,10 +49,10 @@ export const Navbar = () => {
 							{/* <!-- Mobile menu button--> */}
 							<button
 								type='button'
-								className='relative inline-flex items-center justify-center rounded-md p-2 text-gray-900 hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset'
+								className='relative inline-flex items-center justify-center rounded-md p-2   focus:ring-2 focus:ring-white focus:outline-hidden focus:ring-inset'
 								aria-controls='mobile-menu'
 								aria-expanded='false'
-								onClick={() => setLoadingBtn(!isOpen)}
+								onClick={() => setIsOpen(!isOpen)}
 							>
 								<span className='absolute -inset-0.5'></span>
 								<span className='sr-only'>Open main menu</span>
@@ -89,6 +89,7 @@ export const Navbar = () => {
 									/>
 								</svg>
 							</button>
+							{/* Se termina el menú */}
 						</div>
 						{/* Content menu  */}
 						<div className='flex flex-1 items-center justify-center sm:items-center sm:justify-start '>
@@ -154,7 +155,6 @@ export const Navbar = () => {
 								<button
 									onClick={() => {
 										setLoadingBtn(true);
-										setIsOpen(!isOpen);
 										signOut({
 											callbackUrl: '/login',
 										});
@@ -181,12 +181,12 @@ export const Navbar = () => {
 				{isOpen && (
 					<div className='sm:hidden' id='mobile-menu'>
 						<div className='space-y-1 px-2 pt-2 pb-3'>
-							{/*  <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" --> */}
 							{menuItems.map(item => (
 								<SidebarMenuItems
 									key={item.path}
 									{...item}
 									isOpen={isOpen}
+									setIsOpen={setIsOpen}
 								/>
 							))}
 						</div>

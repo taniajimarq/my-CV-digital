@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
 
+//Estructura de los datos para los usuarios
 export interface UserPayload {
 	email: string;
 	username: string;
@@ -13,7 +14,6 @@ export interface UserPayload {
 	code: string;
 }
 
-/* Crear */
 export async function POST(request: NextRequest) {
 	try {
 		const body: UserPayload = await request.json();
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 				{ status: 400 },
 			);
 		}
-		//Verificar que no exista el usuario
+		// Verificar que no exista el usuario
 		const existingUser = await prisma.user.findUnique({
 			where: { email: body.email },
 		});
@@ -35,10 +35,10 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		//Encriptar la contraseña antes de guardarla
+		// Encriptar la contraseña antes de guardarla
 		const hashedPassword = await bcrypt.hash(body.password, 10);
 
-		//Crear el usuario
+		// Crear el usuario
 		await prisma.user.create({
 			data: {
 				email: body.email,
@@ -60,12 +60,13 @@ export async function POST(request: NextRequest) {
 		);
 	}
 }
-/* Consultar */
+
+/* Consultar usuario */
 export async function GET() {
 	try {
 		const users = await prisma.user.findMany();
 
-		if (!users) {
+		if (!users.length) {
 			return NextResponse.json(
 				{ error: 'Usuario no encontrado' },
 				{ status: 404 },
@@ -73,8 +74,8 @@ export async function GET() {
 		}
 
 		return NextResponse.json(users);
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	} catch (error) {
+		console.log(error);
 		return NextResponse.json(
 			{ error: 'Error al obtener el usuario' },
 			{ status: 500 },

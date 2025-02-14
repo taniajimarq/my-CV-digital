@@ -2,6 +2,9 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { Display_Alert_Interface } from '@/interfaces';
 
+{
+	/*Parametros para crear alertas con SweetAlert2 */
+}
 export const useSwalAlert = () => {
 	const MySwal = withReactContent(Swal);
 

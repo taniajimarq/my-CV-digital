@@ -6,6 +6,7 @@ const Loquesoy = () => {
 		<>
 			<div className='bg-gradient-to-r from-white via-[#B87F9E] to-white p-6 md:pl-24 h-auto'>
 				<div className='grid grid-cols-1 md:grid-cols-3 gap-7'>
+					{/*Tarjeta de misión*/}
 					<div className='w-full'>
 						<Card className='min-[1300px]:h-[200px]'>
 							<CardHeader>
@@ -21,6 +22,7 @@ const Loquesoy = () => {
 							</CardContent>
 						</Card>
 					</div>
+					{/*Tarjeta de sisión*/}
 					<div className='w-full'>
 						<Card className='min-[1300px]:h-[200px]'>
 							<CardHeader>
@@ -37,6 +39,7 @@ const Loquesoy = () => {
 							</CardContent>
 						</Card>
 					</div>
+					{/*Tarjeta de valores*/}
 					<div className='w-full'>
 						<Card className='min-[1300px]:h-[200px]'>
 							<CardHeader>

@@ -3,6 +3,9 @@ import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
+{
+	/*Ruta privada, se asegura que exista un usuario logueado para poder acceder a ella */
+}
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 	const { data: session, status } = useSession();
 	const router = useRouter();
