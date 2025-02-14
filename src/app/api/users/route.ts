@@ -5,7 +5,6 @@ import { NextRequest } from 'next/server';
 import bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
-
 //Estructura de los datos para los usuarios
 export interface UserPayload {
 	email: string;
