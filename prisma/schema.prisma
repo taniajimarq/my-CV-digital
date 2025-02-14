@@ -25,11 +25,13 @@ model Projects {
 }
 
 model User {
-  id               Int      @id @default(autoincrement())
-  email            String   @unique
-  username         String   @unique
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  username         String    @unique
   password         String
   verificationCode String?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  failedAttempts   Int       @default(0)
+  blockedUntil     DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
 }

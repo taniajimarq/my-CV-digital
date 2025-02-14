@@ -1,6 +1,6 @@
 'use client';
 import { Label } from '@radix-ui/react-label';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { IoLogoGithub } from 'react-icons/io5';
 import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
@@ -27,13 +27,42 @@ const Login = () => {
 	const [loading, setLoading] = useState(false);
 	const [loadingBtn, setLoadingBtn] = useState(false);
 	const [loadinGit, setLoadinGit] = useState(false);
+	const [blocked, setBlocked] = useState(false);
+	const [blockTime, setBlockTime] = useState<number | null>(null);
 
-	{
-		/*Envío de datos para iniciar sesión */
-	}
+	// Revisar si el usuario ya está bloqueado al cargar la página
+	useEffect(() => {
+		const storedBlockTime = localStorage.getItem('blockTime');
+		if (storedBlockTime) {
+			const timeRemaining = parseInt(storedBlockTime, 1) - Date.now();
+			if (timeRemaining > 0) {
+				setBlocked(true);
+				setBlockTime(parseInt(storedBlockTime, 1));
+			} else {
+				localStorage.removeItem('blockTime');
+			}
+		}
+	}, []);
+
+	// Temporizador para desbloquear el botón después de 5 minutos
+	useEffect(() => {
+		if (blockTime) {
+			const interval = setInterval(() => {
+				const timeRemaining = blockTime - Date.now();
+				if (timeRemaining <= 0) {
+					setBlocked(false);
+					setBlockTime(null);
+					localStorage.removeItem('blockTime');
+					clearInterval(interval);
+				}
+			}, 1000);
+			return () => clearInterval(interval);
+		}
+	}, [blockTime]);
+
+	// Envío de datos para iniciar sesión
 	const onSubmit = handleSubmit(async data => {
-		console.log(data);
-		setLoadingBtn(true); //Muestra loading de carga en el botón
+		setLoadingBtn(true);
 
 		const res = await signIn('credentials', {
 			email: data.email,
@@ -41,32 +70,34 @@ const Login = () => {
 			code: data.code || '',
 			redirect: false,
 		});
-		{
-			/*Envía código de verificación si existen las credenciales*/
-		}
+
 		if (res?.error?.includes('Código enviado')) {
-			{
-				/*Se muestra el input de código de verificación y se manejan los estados para el pacmanLoader*/
-			}
 			setNeedsCode(true);
 			setLoadingBtn(false);
 			setLoading(true);
-			{
-				/*Muestra la alerta de que se envió el código*/
-			}
 			display_alert({
 				success: false,
 				icon: 'warning',
 				msg: 'Código enviado. Revisa tu correo.',
 			});
-		} else if (res?.error?.includes('Código incorrecto')) {
-			{
-				/*Cacha el error si el código que ingresa el usuario es incorrecto*/
-			}
-			setNeedsCode(true); // Mantiene habilitado el input del código
+		} else if (res?.error?.includes('Código de verificación incorrecto')) {
+			setNeedsCode(true);
+			setLoadingBtn(false);
 			display_alert({
 				success: false,
 				msg: 'Código incorrecto. Inténtalo de nuevo.',
+			});
+		} else if (res?.error?.includes('Demasiados intentos')) {
+			setBlocked(true);
+			setLoadingBtn(false);
+			setLoading(false);
+			const unblockTime = Date.now() + 1 * 60 * 1000; // Bloqueo de 5 minutos
+			setBlockTime(unblockTime);
+			localStorage.setItem('blockTime', unblockTime.toString());
+
+			display_alert({
+				success: false,
+				msg: 'Demasiados intentos fallidos. Intenta más tarde.',
 			});
 		} else if (res?.error) {
 			display_alert({
@@ -74,9 +105,6 @@ const Login = () => {
 				msg: res.error,
 			});
 		} else {
-			{
-				/*Redireccióna a la tabla de proyectos*/
-			}
 			router.push('/portafolio/new');
 			setLoading(false);
 			display_alert({
@@ -104,7 +132,6 @@ const Login = () => {
 						/>
 						{errors.email && (
 							<span className='text-red-500 text-xs'>
-								{/*Se muestra mensaje de error required en el input*/}
 								{String(errors.email.message)}
 							</span>
 						)}
@@ -125,16 +152,17 @@ const Login = () => {
 							/>
 							{errors.password && (
 								<span className='text-red-500 text-xs'>
-									{/*Se muestra mensaje de error required en el input*/}
 									{String(errors.password.message)}
 								</span>
 							)}
 						</div>
 					)}
+
 					<div className='flex flex-col items-center justify-center '>
-						{/*Se muestra el loader de pacman miesntras el usuario agrega el código de verificación*/}
+						{/* Se muestra el loader de Pacman mientras el usuario agrega el código de verificación */}
 						<PacmanLoader color='#e0dd47' loading={loading} />
 					</div>
+
 					{needsCode && (
 						<div>
 							<Label className='block text-sm font-medium text-gray-700'>
@@ -162,18 +190,14 @@ const Login = () => {
 								<PropagateLoader
 									color='#5a16e9'
 									loading={loadingBtn}
-									cssOverride={{
-										padding: '10px',
-										margin: '10px',
-									}}
 								/>
 							</div>
 						) : (
 							<button
 								type='submit'
 								className='w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all'
+								disabled={blocked || loadingBtn}
 							>
-								{/*Si las credenciales son válidas se muestra el botón para verificar código y muestra el texto*/}
 								{needsCode
 									? 'Verificar Código'
 									: 'Iniciar Sesión'}
@@ -183,15 +207,14 @@ const Login = () => {
 						<button
 							type='button'
 							onClick={() => {
-								setLoadinGit(true); // Activa el estado de carga
+								setLoadinGit(true);
 								signIn('github', {
-									callbackUrl: '/portafolio/new', //Redireccióna cuando se inicia la sesión
+									callbackUrl: '/portafolio/new',
 								});
 							}}
 							className='w-full flex items-center justify-center gap-2 text-black bg-white border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 transition-all'
 						>
 							<IoLogoGithub className='w-5 h-5' />
-							{/*Mientras consulta los providers y genera el token el botón se muestra como cargando*/}
 							{!loadinGit ? 'Iniciar con GitHub' : 'Cargando... '}
 						</button>
 					</div>
@@ -200,4 +223,5 @@ const Login = () => {
 		</div>
 	);
 };
+
 export default Login;
