@@ -26,27 +26,43 @@ const Login = () => {
 	const [needsCode, setNeedsCode] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [loadingBtn, setLoadingBtn] = useState(false);
+	const [loadinGit, setLoadinGit] = useState(false);
 
+	{
+		/*Envío de datos para iniciar sesión */
+	}
 	const onSubmit = handleSubmit(async data => {
 		console.log(data);
-		setLoadingBtn(true);
+		setLoadingBtn(true); //Muestra loading de carga en el botón
+
 		const res = await signIn('credentials', {
 			email: data.email,
 			password: data.password,
 			code: data.code || '',
 			redirect: false,
 		});
-
+		{
+			/*Envía código de verificación si existen las credenciales*/
+		}
 		if (res?.error?.includes('Código enviado')) {
+			{
+				/*Se muestra el input de código de verificación y se manejan los estados para el pacmanLoader*/
+			}
 			setNeedsCode(true);
 			setLoadingBtn(false);
 			setLoading(true);
+			{
+				/*Muestra la alerta de que se envió el código*/
+			}
 			display_alert({
 				success: false,
 				icon: 'warning',
 				msg: 'Código enviado. Revisa tu correo.',
 			});
 		} else if (res?.error?.includes('Código incorrecto')) {
+			{
+				/*Cacha el error si el código que ingresa el usuario es incorrecto*/
+			}
 			setNeedsCode(true); // Mantiene habilitado el input del código
 			display_alert({
 				success: false,
@@ -58,6 +74,9 @@ const Login = () => {
 				msg: res.error,
 			});
 		} else {
+			{
+				/*Redireccióna a la tabla de proyectos*/
+			}
 			router.push('/portafolio/new');
 			setLoading(false);
 			display_alert({
@@ -85,6 +104,7 @@ const Login = () => {
 						/>
 						{errors.email && (
 							<span className='text-red-500 text-xs'>
+								{/*Se muestra mensaje de error required en el input*/}
 								{String(errors.email.message)}
 							</span>
 						)}
@@ -105,12 +125,14 @@ const Login = () => {
 							/>
 							{errors.password && (
 								<span className='text-red-500 text-xs'>
+									{/*Se muestra mensaje de error required en el input*/}
 									{String(errors.password.message)}
 								</span>
 							)}
 						</div>
 					)}
 					<div className='flex flex-col items-center justify-center '>
+						{/*Se muestra el loader de pacman miesntras el usuario agrega el código de verificación*/}
 						<PacmanLoader color='#e0dd47' loading={loading} />
 					</div>
 					{needsCode && (
@@ -151,6 +173,7 @@ const Login = () => {
 								type='submit'
 								className='w-full bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all'
 							>
+								{/*Si las credenciales son válidas se muestra el botón para verificar código y muestra el texto*/}
 								{needsCode
 									? 'Verificar Código'
 									: 'Iniciar Sesión'}
@@ -159,15 +182,17 @@ const Login = () => {
 
 						<button
 							type='button'
-							onClick={() =>
+							onClick={() => {
+								setLoadinGit(true); // Activa el estado de carga
 								signIn('github', {
-									callbackUrl: '/portafolio/new',
-								})
-							}
+									callbackUrl: '/portafolio/new', //Redireccióna cuando se inicia la sesión
+								});
+							}}
 							className='w-full flex items-center justify-center gap-2 text-black bg-white border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 transition-all'
 						>
 							<IoLogoGithub className='w-5 h-5' />
-							Iniciar con GitHub
+							{/*Mientras consulta los providers y genera el token el botón se muestra como cargando*/}
+							{!loadinGit ? 'Iniciar con GitHub' : 'Cargando... '}
 						</button>
 					</div>
 				</form>

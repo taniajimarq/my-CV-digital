@@ -5,6 +5,7 @@ const Habilidades = () => {
 	return (
 		<>
 			<div className='flex flex-col md:flex-row min-[1200px]:space-x-7'>
+				{/* Tarjetas de habilidades */}
 				<div className='w-full flex flex-row text-[#7d7d7d] font-sans shadow-xl p-20 max-[1200px]:p-10'>
 					<Personales />
 				</div>

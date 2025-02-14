@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
+//Interfaz de proyecto
 export interface ProjectPayload {
 	title: string;
 	subTitle: string;
@@ -10,7 +11,7 @@ export interface ProjectPayload {
 	image: string;
 	url: string;
 }
-/* Crear */
+/* Crear nuevo proyecto en la base de datos*/
 export async function POST(request: NextRequest) {
 	const body: ProjectPayload = await request.json();
 	try {
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest) {
 		return NextResponse.json(
 			{ msg: 'Projecto creado correctamente' },
 			{
-				status: 201,
+				status: 201, //
 			},
 		);
 	} catch (error) {
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
 	}
 }
 
-/* Consultar */
+/* Obtiene la lista de proyectos ordenados por ID en orden descendente */
 export async function GET() {
 	try {
 		const projects = await prisma.projects.findMany({

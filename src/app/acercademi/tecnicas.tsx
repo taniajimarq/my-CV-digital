@@ -4,6 +4,7 @@ import { IoEllipseOutline } from 'react-icons/io5';
 const Tecnicas = () => {
 	return (
 		<>
+			{/*Habilidades técnicas*/}
 			<div className='w-5/6'>
 				<h2 className='text-[#3e7abf] font-bold text-xl mb-5'>
 					Habilidades técnicas
