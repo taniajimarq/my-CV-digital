@@ -61,6 +61,7 @@ const Login = () => {
 	}, [blockTime]);
 
 	// Envío de datos para iniciar sesión
+
 	const onSubmit = handleSubmit(async data => {
 		setLoadingBtn(true);
 
@@ -71,27 +72,39 @@ const Login = () => {
 			redirect: false,
 		});
 
-		if (res?.error?.includes('Código enviado')) {
+		console.log('Respuesta de signIn:', res);
+
+		// ✅ Extraer mensaje de error si está en formato JSON
+		let errorMessage = res?.error || '';
+		try {
+			const parsedError = JSON.parse(res?.error || '{}');
+			errorMessage = parsedError.message || errorMessage;
+		} catch {
+			console.error('Error al parsear el mensaje:', res?.error);
+		}
+
+		if (errorMessage === 'Código enviado') {
 			setNeedsCode(true);
 			setLoadingBtn(false);
 			setLoading(true);
+
 			display_alert({
 				success: false,
 				icon: 'warning',
 				msg: 'Código enviado. Revisa tu correo.',
 			});
-		} else if (res?.error?.includes('Código de verificación incorrecto')) {
+		} else if (errorMessage === 'Código de verificación incorrecto') {
 			setNeedsCode(true);
 			setLoadingBtn(false);
 			display_alert({
 				success: false,
 				msg: 'Código incorrecto. Inténtalo de nuevo.',
 			});
-		} else if (res?.error?.includes('Demasiados intentos')) {
+		} else if (errorMessage.includes('Demasiados intentos')) {
 			setBlocked(true);
 			setLoadingBtn(false);
 			setLoading(false);
-			const unblockTime = Date.now() + 1 * 60 * 1000; // Bloqueo de 5 minutos
+			const unblockTime = Date.now() + 5 * 60 * 1000;
 			setBlockTime(unblockTime);
 			localStorage.setItem('blockTime', unblockTime.toString());
 
@@ -99,14 +112,17 @@ const Login = () => {
 				success: false,
 				msg: 'Demasiados intentos fallidos. Intenta más tarde.',
 			});
-		} else if (res?.error) {
+		} else if (errorMessage) {
+			setLoading(false);
+			setLoadingBtn(false);
 			display_alert({
 				success: false,
-				msg: res.error,
+				msg: errorMessage,
 			});
 		} else {
 			router.push('/portafolio/new');
 			setLoading(false);
+			setLoadingBtn(false);
 			display_alert({
 				success: true,
 				msg: 'Bienvenido',
