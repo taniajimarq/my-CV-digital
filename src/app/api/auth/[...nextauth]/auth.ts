@@ -1,7 +1,7 @@
 import { NextAuthOptions } from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import prisma from '@/lib/db';
+import { prisma } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 import { sendVerificationCode } from '../../../../../utils/mailer';
 
@@ -25,7 +25,13 @@ export const authOptions: NextAuthOptions = {
 			async authorize(credentials) {
 				try {
 					if (!credentials?.email || !credentials?.password) {
-						return null;
+						return Promise.reject(
+							new Error(
+								JSON.stringify({
+									message: 'Credenciales incorrectas',
+								}),
+							),
+						);
 					}
 
 					const user = await prisma.user.findUnique({
@@ -33,7 +39,13 @@ export const authOptions: NextAuthOptions = {
 					});
 
 					if (!user) {
-						return null;
+						return Promise.reject(
+							new Error(
+								JSON.stringify({
+									message: 'Usuario no encontrado',
+								}),
+							),
+						);
 					}
 
 					const now = new Date();
@@ -41,8 +53,12 @@ export const authOptions: NextAuthOptions = {
 						user.blockedUntil &&
 						new Date(user.blockedUntil) > now
 					) {
-						throw new Error(
-							`Cuenta bloqueada. Intenta después de ${new Date(user.blockedUntil).toLocaleTimeString()}`,
+						return Promise.reject(
+							new Error(
+								JSON.stringify({
+									message: `Cuenta bloqueada. Intenta después de ${new Date(user.blockedUntil).toLocaleTimeString()}`,
+								}),
+							),
 						);
 					}
 
@@ -52,7 +68,13 @@ export const authOptions: NextAuthOptions = {
 					);
 
 					if (!matchPassword) {
-						return null;
+						return Promise.reject(
+							new Error(
+								JSON.stringify({
+									message: 'Contraseña incorrecta',
+								}),
+							),
+						);
 					}
 
 					if (credentials.code === '') {
@@ -71,8 +93,11 @@ export const authOptions: NextAuthOptions = {
 
 						await sendVerificationCode(user.email, generatedCode);
 
-						throw new Error(
-							'Código enviado a tu correo. Verifícalo antes de continuar.',
+						// ✅ Enviar mensaje personalizado sin que NextAuth lo sobrescriba
+						return Promise.reject(
+							new Error(
+								JSON.stringify({ message: 'Código enviado' }),
+							),
 						);
 					}
 
@@ -92,10 +117,15 @@ export const authOptions: NextAuthOptions = {
 							data: { failedAttempts, blockedUntil },
 						});
 
-						throw new Error(
-							failedAttempts >= 3
-								? 'Demasiados intentos fallidos. Intenta más tarde.'
-								: 'Código de verificación incorrecto.',
+						return Promise.reject(
+							new Error(
+								JSON.stringify({
+									message:
+										failedAttempts >= 3
+											? 'Demasiados intentos fallidos. Intenta más tarde.'
+											: 'Código de verificación incorrecto.',
+								}),
+							),
 						);
 					}
 
@@ -113,14 +143,23 @@ export const authOptions: NextAuthOptions = {
 						name: user.username,
 						email: user.email,
 					};
-				} catch (error: unknown) {
+				} catch (error) {
 					if (error instanceof Error) {
-						console.error(error.message);
-						return null;
+						console.error('Error en autenticación:', error.message);
+						return Promise.reject(
+							new Error(
+								JSON.stringify({ message: error.message }),
+							),
+						);
 					}
 
-					console.error('Ocurrió un error inesperado.');
-					return null;
+					return Promise.reject(
+						new Error(
+							JSON.stringify({
+								message: 'Ocurrió un error inesperado.',
+							}),
+						),
+					);
 				}
 			},
 		}),
