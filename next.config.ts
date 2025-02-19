@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-	/* config options here */
 	webpack: (config, { isServer }) => {
 		config.module.rules.push({
 			test: /\.html$/,
@@ -16,6 +15,10 @@ const nextConfig: NextConfig = {
 
 		return config;
 	},
+	// ❌ Desactiva Turbopack para evitar el error
+	// experimental: {
+	// 	turbo: {},
+	// },
 };
 
 export default nextConfig;

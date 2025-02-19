@@ -164,4 +164,16 @@ export const authOptions: NextAuthOptions = {
 			},
 		}),
 	],
+	callbacks: {
+		async signIn({ user, account }) {
+			if (account?.provider === 'github') {
+				const allowedGitHubUser = 'taniajimarq';
+				if (user.name !== allowedGitHubUser) {
+					console.log(`Acceso denegado para ${user.name}`);
+					return false; // Bloquea el acceso
+				}
+			}
+			return true;
+		},
+	},
 };
