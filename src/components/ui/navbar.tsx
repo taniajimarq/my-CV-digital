@@ -20,7 +20,7 @@ export const Navbar = () => {
 	const menuItems = [
 		{
 			path: '/acercademi',
-			title: 'Acrca de mi',
+			title: 'Acerca de mí',
 		},
 		{
 			path: '/trayectoria',

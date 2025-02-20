@@ -18,13 +18,13 @@ export function ListProjects() {
 			<div className=' w-full h-auto bg-gradient-to-r from-[#5F39BA] via-[#5F39BA] to-[#ffffff] p-6 md:pl-24 relative mb-5'>
 				<div className='flex flex-row justify-between'>
 					<span className='text-white font-semibold text-xl '>
-						Mi experiencia es laboral y académica, dale un vistazo a
-						mis proyectos!
+						Mi experiencia es laboral y académica; dale un vistazo a
+						¡Mis proyectos!
 					</span>
 				</div>
 				<p className='mb-4 text-base font-normal text-white'>
 					Al trabajar para una empresa dedicada a la creación de
-					soluciónes digitales pude obtener mi pasión por el deseño UX
+					soluciones digitales pude obtener mi pasión por el diseño UX
 					/ UI
 				</p>
 			</div>

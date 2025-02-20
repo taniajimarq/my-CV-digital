@@ -72,7 +72,6 @@ export function useCustomListado() {
 	}
 	/*Envía los datos para crear o editar  */
 	const handleSubmit = async (body: Partial<ProjectPayload>) => {
-		console.log(body);
 		try {
 			if (idProject) {
 				// Editar proyecto

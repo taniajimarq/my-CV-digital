@@ -22,10 +22,10 @@ export const SidebarMenuItems = ({
 			href={path}
 			className={
 				isOpen
-					? `block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-300 hover:text-white ${currentPath === path ? '' : ''}`
+					? `block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-300 hover:text-white ${currentPath === path ? 'bg-gray-200 border-0 ' : ''}`
 					: `
            rounded-md px-3 py-2 text-base ml-8 font-medium text-slate-700 
-            ${currentPath === path ? ' bg-gray-200 border-0 ' : ``}
+            ${currentPath === path ? 'bg-gray-200 border-0 ' : ``}
             `
 			}
 		>
