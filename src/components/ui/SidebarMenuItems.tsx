@@ -25,7 +25,7 @@ export const SidebarMenuItems = ({
 					? `block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-300 hover:text-white ${currentPath === path ? '' : ''}`
 					: `
            rounded-md px-3 py-2 text-base ml-8 font-medium text-slate-700 
-            ${currentPath === path ? '' : ''}
+            ${currentPath === path ? ' bg-gray-200 border-0 ' : ``}
             `
 			}
 		>
