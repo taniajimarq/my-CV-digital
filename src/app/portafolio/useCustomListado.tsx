@@ -19,6 +19,7 @@ export function useCustomListado() {
 	const [projectsAll, setProjectsAll] = useState<ProjectsResponse[]>([]); // Estado para almacenar todos los proyectos
 	const router = useRouter(); //Cambiar de ruta
 	const { display_alert } = useSwalAlert(); // Hook para mostrar alertas
+	const [loading, setLoading] = useState<boolean>(true);
 
 	//Esquema de validación para el formulario usando Zod
 	const FormSchema = z.object({
@@ -158,6 +159,7 @@ export function useCustomListado() {
 	const getAllProject = async () => {
 		try {
 			const { data } = await api.get<ProjectsResponse[]>('/projects');
+
 			setProjectsAll(data);
 		} catch (error) {
 			if (axios.isAxiosError(error)) {
@@ -168,6 +170,8 @@ export function useCustomListado() {
 			} else {
 				console.error('Error desconocido:', error);
 			}
+		} finally {
+			setLoading(false); // Cambia el estado de carga después de la petición
 		}
 	};
 	// Llama a la función para obtener todos los proyectos al cargar el componente
@@ -191,5 +195,6 @@ export function useCustomListado() {
 		router,
 		status,
 		getAllProject,
+		loading,
 	};
 }

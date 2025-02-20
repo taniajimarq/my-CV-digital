@@ -93,7 +93,7 @@ export const authOptions: NextAuthOptions = {
 
 						await sendVerificationCode(user.email, generatedCode);
 
-						// ✅ Enviar mensaje personalizado sin que NextAuth lo sobrescriba
+						// Enviar mensaje personalizado sin que NextAuth lo sobrescriba
 						return Promise.reject(
 							new Error(
 								JSON.stringify({ message: 'Código enviado' }),
@@ -170,7 +170,7 @@ export const authOptions: NextAuthOptions = {
 				const allowedGitHubUser = 'taniajimarq';
 				if (user.name !== allowedGitHubUser) {
 					console.log(`Acceso denegado para ${user.name}`);
-					return false; // Bloquea el acceso
+					return '/login?error=unauthorized'; // Bloquea el acceso
 				}
 			}
 			return true;

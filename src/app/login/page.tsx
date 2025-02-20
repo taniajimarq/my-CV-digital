@@ -34,10 +34,10 @@ const Login = () => {
 	useEffect(() => {
 		const storedBlockTime = localStorage.getItem('blockTime');
 		if (storedBlockTime) {
-			const timeRemaining = parseInt(storedBlockTime, 1) - Date.now();
+			const timeRemaining = parseInt(storedBlockTime, 10) - Date.now();
 			if (timeRemaining > 0) {
 				setBlocked(true);
-				setBlockTime(parseInt(storedBlockTime, 1));
+				setBlockTime(parseInt(storedBlockTime, 10));
 			} else {
 				localStorage.removeItem('blockTime');
 			}
@@ -60,6 +60,20 @@ const Login = () => {
 		}
 	}, [blockTime]);
 
+	//Verificar usuario de github
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get('error') === 'unauthorized') {
+			display_alert({
+				success: false,
+				icon: 'error',
+				msg: 'Tu usuario de GitHub no tiene permisos para acceder.',
+			}).then(() => {
+				router.replace('/login'); // Limpia la URL después de la alerta
+			});
+		}
+	}, [router]);
+
 	// Envío de datos para iniciar sesión
 
 	const onSubmit = handleSubmit(async data => {
@@ -72,9 +86,7 @@ const Login = () => {
 			redirect: false,
 		});
 
-		console.log('Respuesta de signIn:', res);
-
-		// ✅ Extraer mensaje de error si está en formato JSON
+		// Extraer mensaje de error si está en formato JSON
 		let errorMessage = res?.error || '';
 		try {
 			const parsedError = JSON.parse(res?.error || '{}');
