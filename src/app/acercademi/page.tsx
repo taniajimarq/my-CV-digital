@@ -10,7 +10,8 @@ const AcercademiPage = () => {
 			<div className='flex flex-col md:flex-row p-10 min-[1200px]:ml-5 shadow-xl'>
 				<div className='w-full flex flex-col items-center  text-[#7d7d7d] font-sans'>
 					<h1 className='text-[#0e2727] font-bold text-3xl'>
-						Técnico Superior Universitario
+						Ingeniera en desarrollo y gestión de software
+						multiplataforma
 					</h1>
 					<h2 className='text-[#3e7abf] font-bold text-xl'>
 						Especialista UX / UI orientada en el ser humano.
