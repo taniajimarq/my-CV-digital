@@ -35,4 +35,4 @@ Abre [http://localhost:3000](http://localhost:3000) en tu navegador para que pue
 
 ### Deploy en Vercel
 
-Accede a *Agregar URL* en tu navegador para que puedas ver el resultado.
+Accede a [https://my-cv-digital.vercel.app/acercademi](https://my-cv-digital.vercel.app/acercademi) en tu navegador para que puedas ver el resultado.
