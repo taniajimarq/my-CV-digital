@@ -20,7 +20,7 @@ const Personales = () => {
 					</li>
 					<li className='flex flex-row items-center gap-2'>
 						<IoEllipseOutline />
-						<span>Toma de desiciónes.</span>
+						<span>Toma de decisiones.</span>
 					</li>
 					<li className='flex flex-row items-center gap-2'>
 						<IoEllipseOutline />
@@ -36,7 +36,7 @@ const Personales = () => {
 					<li className='flex flex-row items-center gap-2'>
 						<IoEllipseOutline />
 						<span>
-							Pensamiento estratégico, critico y analitico.
+							Pensamiento estratégico, crítico y analítico.
 						</span>
 					</li>
 					<li className='flex flex-row items-center gap-2'>

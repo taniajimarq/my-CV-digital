@@ -13,7 +13,7 @@ const Footer = () => {
 					<div className='w-full max-w-screen-xl mx-auto py-4 h-full flex flex-col justify-center'>
 						<div className='flex flex-col sm:flex-row sm:items-center sm:justify-between w-full text-center sm:text-left'>
 							<span className='block text-sm text-gray-500 dark:text-gray-400'>
-								© 2025 Tania Jiménez . Reservados todos los
+								© 2025 Tania Jiménez. Reservados todos los
 								derechos.
 							</span>
 							<span className='flex justify-center sm:justify-start text-sm text-gray-500 dark:text-gray-400 mt-2 sm:mt-0'>

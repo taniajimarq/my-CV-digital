@@ -14,10 +14,10 @@ const Loquesoy = () => {
 							</CardHeader>
 							<CardContent>
 								<p className='text-gray-600'>
-									Desarrollar mi carrera profesiónal formando
+									Desarrollar mi carrera profesional formando
 									parte de una empresa que me permita aplicar
 									lo que he aprendido y seguir creciendo de
-									manera tanto profesiónal como personal.
+									manera tanto profesional como personal.
 								</p>
 							</CardContent>
 						</Card>
@@ -32,7 +32,7 @@ const Loquesoy = () => {
 								<p className='text-gray-600'>
 									Crear diseños llamativos, intuitivos y
 									funcionales que mejoren la experiencia de
-									las personas que utilizan tecnología
+									las personas que utilizan tecnología,
 									ayudando a lograr sus objetivos de manera
 									rápida y eficaz.
 								</p>
