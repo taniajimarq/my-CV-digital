@@ -6,6 +6,7 @@ import Banner from './acercademi/banner';
 import Footer from '@/components/ui/footer';
 import { usePathname } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
+import { Analytics } from '@vercel/analytics/react';
 
 export default function RootLayout({
 	children,
@@ -32,6 +33,7 @@ export default function RootLayout({
 
 						<div className='flex-grow sm:mx-24 mx-3 mt-5'>
 							{children}
+							<Analytics />
 						</div>
 
 						<Footer />
